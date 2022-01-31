@@ -1,5 +1,9 @@
 package postgres
 
+import (
+	"github.com/saromanov/knowledge/internal/storage"
+)
+
 type postgres struct {
 	cfg Config
 }
