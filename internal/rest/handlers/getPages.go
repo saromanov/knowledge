@@ -10,7 +10,7 @@ type GetPageHandler struct {
 	store storage.Storage
 }
 
-func NewGetArticleHandler(st storage.Storage) *CreatePageHandler {
+func NewGetArticleHandler(st storage.Storage) *GetPageHandler {
 	return &GetPageHandler{
 		store: st,
 	}
