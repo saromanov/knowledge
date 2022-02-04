@@ -10,6 +10,7 @@ type GetPageHandler struct {
 	store storage.Storage
 }
 
+// NewGetArticleHandler provides init
 func NewGetArticleHandler(st storage.Storage) *GetPageHandler {
 	return &GetPageHandler{
 		store: st,
