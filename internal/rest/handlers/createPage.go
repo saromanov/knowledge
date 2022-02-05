@@ -11,22 +11,22 @@ import (
 	"github.com/go-chi/render"
 )
 
-type CreatePageHandler struct {
+type createPageHandler struct {
 	store storage.Storage
 }
 
-func NewCreateArticleHandler(st storage.Storage) *CreatePageHandler {
-	return &CreatePageHandler{
+func NewCreateArticleHandler(st storage.Storage) *createPageHandler {
+	return &createPageHandler{
 		store: st,
 	}
 }
-func (h CreatePageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	var st storageModel.Page
 	if err := json.NewDecoder(r.Body).Decode(&st); err != nil {
 		return
 	}
-	if err := h.store.CreatePage(ctx, st); err != nil {
+	if err := h.store.CreatePage(ctx, &st); err != nil {
 		return
 	}
 

@@ -7,5 +7,5 @@ import (
 )
 // Storage defines interface for storage
 type Storage interface {
-	CreatePage(ctx context.Context, *model.Page) error
+	CreatePage(ctx context.Context, m *model.Page) error
 }
