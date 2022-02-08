@@ -3,6 +3,8 @@ package service
 import (
 	"context"
 	"sync"
+
+	"github.com/oklog/run"
 )
 
 // Service defines interface for service
@@ -21,7 +23,7 @@ func New() *ServiceImpl {
 	return &ServiceImpl{}
 }
 
-func (s *ServiceImpl) Add(srv Service) error {
+func (s *ServiceImpl) Add(srv Service,g run.Group) error {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 	s.srvs = append(s.srvs, srv)
@@ -32,7 +34,7 @@ func (s *ServiceImpl) Add(srv Service) error {
 func (s *ServiceImpl) Start(ctx context.Context) error {
 	var wg sync.WaitGroup
 	wg.Add(len(s.srvs))
-	for srv := range s.srvs {
+	for _, srv := range s.srvs {
 		go func(srvImpl Service){
 			defer wg.Done()
 			if err := srvImpl.Run(ctx); err != nil {
