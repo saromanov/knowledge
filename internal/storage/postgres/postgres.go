@@ -13,7 +13,7 @@ import (
 
 type postgres struct {
 	cfg Config
-	db *sql.DB
+	db  *sql.DB
 }
 
 // New provides initialization of the module
@@ -23,7 +23,23 @@ func New(cfg Config) storage.Storage {
 	}
 }
 
+// Init provides initialization to db
+func (p *postgres) Init(ctx context.Context) error {
+	if err:= p.connect(); err != nil {
+		return err
+	}
+	return nil
+}
+
 func (p *postgres) CreatePage(ctx context.Context, m *models.Page) error {
+	return nil
+}
+
+// Close provides closing of connectin to db
+func (p *postgres) Close() error {
+	if err := p.db.Close(); err != nil {
+		return err
+	}
 	return nil
 }
 

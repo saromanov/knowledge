@@ -7,7 +7,9 @@ import (
 )
 // Storage defines interface for storage
 type Storage interface {
+	Init(ctx contect.Context) error
 	CreatePage(ctx context.Context, m *model.Page) error
+	Close(ctx context.Context) error
 }
 
 type StorageImpl[T Storage] struct {
