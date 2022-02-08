@@ -36,7 +36,7 @@ func (p *postgres) CreatePage(ctx context.Context, m *models.Page) error {
 }
 
 // Close provides closing of connectin to db
-func (p *postgres) Close() error {
+func (p *postgres) Close(ctx context.Context) error {
 	if err := p.db.Close(); err != nil {
 		return err
 	}
