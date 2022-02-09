@@ -40,3 +40,7 @@ func (r *rest) Run(ctx context.Context) error {
 	}
 	return nil
 }
+
+func (r *rest) Close(ctx context.Context) error {
+	return nil
+}

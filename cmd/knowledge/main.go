@@ -20,16 +20,16 @@ func main(){
 	}
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
-	g := run.Group{}
-	srv := service.New()
+	g := &run.Group{}
 	pg := postgres.New(cfg.Postgres)
 	if err := pg.Init(ctx); err != nil {
 		panic(err)
 	}
-	defer pg.Close(ctx)
 	r := rest.New(rest.Config{
 		Address: "localhost:8044",
 	}, pg)
-	srv.Add(r, g)
-	srv.Start(ctx)
+
+	if err := service.StartService(ctx, r, g); err != nil {
+		panic(err)
+	}
 }
