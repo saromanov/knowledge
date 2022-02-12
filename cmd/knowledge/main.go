@@ -34,9 +34,11 @@ func main(){
 	r := rest.New(rest.Config{
 		Address: "localhost:8044",
 	}, pg)
-
 	if err := service.StartService(ctx, r, g); err != nil {
 		log.WithError(err).Fatal("unable to start service")
+	}
+	if err := g.Run(); err != nil {
+		log.WithError(err).Fatal("unable to setup services")
 	}
 	log.Info("Finishing of the working")
 }
