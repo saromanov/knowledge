@@ -9,6 +9,7 @@ import (
 	"github.com/saromanov/knowledge/internal/storage"
 
 	"github.com/go-chi/render"
+	"github.com/sirupsen/logrus"
 )
 
 type createPageHandler struct {
@@ -22,11 +23,14 @@ func NewCreateArticleHandler(st storage.Storage) *createPageHandler {
 }
 func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
+	log := logrus.New().WithContext(ctx)
 	var st storageModel.Page
 	if err := json.NewDecoder(r.Body).Decode(&st); err != nil {
+		log.WithError(err).Error("unable to parse request")
 		return
 	}
 	if err := h.store.CreatePage(ctx, &st); err != nil {
+		log.WithError(err).Error("unable to create page")
 		return
 	}
 
