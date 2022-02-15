@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/saromanov/knowledge/internal/models/convert"
 	restModel "github.com/saromanov/knowledge/internal/models/rest"
-	storageModel "github.com/saromanov/knowledge/internal/models/storage"
 	"github.com/saromanov/knowledge/internal/storage"
 
 	"github.com/go-chi/render"
@@ -24,12 +24,13 @@ func NewCreateArticleHandler(st storage.Storage) *createPageHandler {
 func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	ctx := r.Context()
 	log := logrus.New().WithContext(ctx)
-	var st storageModel.Page
+	var st restModel.Page
 	if err := json.NewDecoder(r.Body).Decode(&st); err != nil {
 		log.WithError(err).Error("unable to parse request")
 		return
 	}
-	if err := h.store.CreatePage(ctx, &st); err != nil {
+	m := convert.RestPageToStoragePage(&st)
+	if err := h.store.CreatePage(ctx, m); err != nil {
 		log.WithError(err).Error("unable to create page")
 		return
 	}
