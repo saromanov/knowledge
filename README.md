@@ -1,4 +1,4 @@
 # knowledge
-Simple knowledge base
+Basic backend for knowlange base
 
 
