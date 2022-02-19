@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: knowledge
-        image: saromanov/knowledge
+        image: github.com/saromanov/knowledge
         resources:
           limits:
             memory: "128Mi"
