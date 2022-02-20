@@ -35,5 +35,12 @@ func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	render.JSON(w, r, restModel.Response{})
+	out, err := json.Marshal(st)
+	if err != nil {
+		log.WithError(err).Error("unable to marshal response")
+		return
+	}
+	render.JSON(w, r, restModel.Response{
+		Data: (json.RawMessage)(out),
+	})
 }

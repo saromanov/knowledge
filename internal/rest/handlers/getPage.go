@@ -10,12 +10,12 @@ type GetPageHandler struct {
 	store storage.Storage
 }
 
-// NewGetArticleHandler provides init
-func NewGetArticleHandler(st storage.Storage) *GetPageHandler {
+// NewGetPageHandler provides init
+func NewGetPageHandler(st storage.Storage) *GetPageHandler {
 	return &GetPageHandler{
 		store: st,
 	}
 }
-func (h GetPageHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-
+func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
+	
 }
