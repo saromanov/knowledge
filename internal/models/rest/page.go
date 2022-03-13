@@ -3,6 +3,7 @@ package rest
 import "time"
 
 type Page struct {
+	ID        int64     `json:"id"`
 	Title     string    `json:"title"`
 	Body      string    `json:"body"`
 	AuthorID  string    `json:"author_id"`

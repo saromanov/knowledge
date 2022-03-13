@@ -9,6 +9,7 @@ import (
 type Storage interface {
 	Init(ctx context.Context) error
 	CreatePage(ctx context.Context, m *model.Page) error
+	GetPage(ctx context.Context, id int64) (*model.Page, error)
 	Close(ctx context.Context) error
 }
 

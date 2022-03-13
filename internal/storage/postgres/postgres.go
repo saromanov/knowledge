@@ -35,6 +35,11 @@ func (p *postgres) CreatePage(ctx context.Context, m *models.Page) error {
 	return nil
 }
 
+// GetPage provides getting of the page by id
+func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error){
+	return &models.Page{}, nil
+}
+
 // Close provides closing of connectin to db
 func (p *postgres) Close(ctx context.Context) error {
 	if err := p.db.Close(); err != nil {
