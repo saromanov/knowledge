@@ -25,18 +25,28 @@ func New(cfg Config) storage.Storage {
 
 // Init provides initialization to db
 func (p *postgres) Init(ctx context.Context) error {
-	if err:= p.connect(); err != nil {
+	if err := p.connect(); err != nil {
 		return err
 	}
 	return nil
 }
 
+// CreatePage provides creating of the page
 func (p *postgres) CreatePage(ctx context.Context, m *models.Page) error {
+	sqlStatement := `
+INSERT INTO page (title, body, created_at, updated_at, author_id)
+VALUES ($1, $2, $3, $4, $5)
+RETURNING id`
+	id := 0
+	err := p.db.QueryRow(sqlStatement, m.Title, m.Body, m.CreatedAt, m.UpdatedAt, m.AuthorID).Scan(&id)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 // GetPage provides getting of the page by id
-func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error){
+func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) {
 	return &models.Page{}, nil
 }
 
