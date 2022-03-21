@@ -7,7 +7,6 @@ import (
 	"github.com/saromanov/knowledge/internal/models/convert"
 	restModel "github.com/saromanov/knowledge/internal/models/rest"
 	"github.com/saromanov/knowledge/internal/storage"
-	"github.com/saromanov/knowledge/internal/rest/validation"
 	"github.com/saromanov/knowledge/internal/rest/response"
 
 	"github.com/go-chi/render"
@@ -35,11 +34,11 @@ func (h *createAuthorHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	m := convert.RestPageToStoragePage(&st)
-	if err := h.store.CreatePage(ctx, m); err != nil {
-		log.WithError(err).Error("unable to create page")
+	m := convert.RestAuthorToStorageAuthor(&st)
+	if err := h.store.CreateAuthor(ctx, m); err != nil {
+		log.WithError(err).Error("unable to create author")
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
-			Message: "unable to create page",
+			Message: "unable to create author",
 		})
 		return
 	}

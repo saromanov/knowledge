@@ -45,6 +45,20 @@ RETURNING id`
 	return nil
 }
 
+// CreateAuthor provides creating of the page
+func (p *postgres) CreateAuthor(ctx context.Context, m *models.Author) error {
+	id := 0
+	sqlStatement := `
+INSERT INTO author (id, name, created_at)
+VALUES ($1, $2, $3)
+RETURNING id`
+	err := p.db.QueryRow(sqlStatement, m.Name, m.CreatedAt).Scan(&id)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
 // GetPage provides getting of the page by id
 func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) {
 	return &models.Page{}, nil

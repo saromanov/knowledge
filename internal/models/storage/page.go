@@ -16,6 +16,7 @@ type Page struct {
 type Author struct {
 	ID   int64  `db:"id"`
 	Name string `db:"author"`
+	CreatedAt time.Time `db:"created_at"`
 }
 
 // Link defines urls to external resources
