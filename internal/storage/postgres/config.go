@@ -7,5 +7,5 @@ type Config struct {
 	Username       string `env:"POSTGRES_USERNAME"`
 	Password       string `env:"POSTGRES_PASSWORD"`
 	DB             string `env:"POSTGRES_DB"`
-	ConnectRetries int    `env:POSTGERS_CONNECT_RETRIES,default=3`
+	ConnectRetries int    `env:"POSTGERS_CONNECT_RETRIES,default=3"`
 }

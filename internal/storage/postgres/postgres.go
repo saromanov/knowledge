@@ -90,6 +90,7 @@ func (p *postgres) connect() error {
 		}
 		if err := db.Ping(); err != nil {
 			lastErr = err
+			continue
 		}
 		p.db = db
 		return nil
