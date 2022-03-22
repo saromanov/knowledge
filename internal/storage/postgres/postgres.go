@@ -46,17 +46,23 @@ RETURNING id`
 }
 
 // CreateAuthor provides creating of the page
-func (p *postgres) CreateAuthor(ctx context.Context, m *models.Author) error {
-	id := 0
+func (p *postgres) CreateAuthor(ctx context.Context, m *models.Author) (int64, error) {
+	if m == nil {
+		return 0, fmt.Errorf("author request is not defined")
+	}
+	if p.db == nil {
+		return 0, fmt.Errorf("db init is not defined")
+	}
+	var id int64
 	sqlStatement := `
 INSERT INTO author (id, name, created_at)
 VALUES ($1, $2, $3)
 RETURNING id`
 	err := p.db.QueryRow(sqlStatement, m.Name, m.CreatedAt).Scan(&id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 // GetPage provides getting of the page by id

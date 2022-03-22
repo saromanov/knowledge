@@ -74,7 +74,7 @@ func (r *rest) handlers() http.Handler {
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 	router.Route("/api/v1", func(ro chi.Router) {
 		ro.Post("/pages", handlers.NewCreateArticleHandler(r.st).Handle)
-		ro.Post("/authors", handlers.NewCreateArticleHandler(r.st).Handle)
+		ro.Post("/authors", handlers.NewCreateAuthorHandler(r.st).Handle)
 		ro.Get("/pages/{id}", handlers.NewGetPageHandler(r.st).Handle)
 	})
 	return router

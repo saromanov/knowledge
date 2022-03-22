@@ -2,12 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 
 	"github.com/saromanov/knowledge/internal/models/convert"
 	restModel "github.com/saromanov/knowledge/internal/models/rest"
-	"github.com/saromanov/knowledge/internal/storage"
 	"github.com/saromanov/knowledge/internal/rest/response"
+	"github.com/saromanov/knowledge/internal/storage"
 
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
@@ -35,14 +36,15 @@ func (h *createAuthorHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	m := convert.RestAuthorToStorageAuthor(&st)
-	if err := h.store.CreateAuthor(ctx, m); err != nil {
+	id, err := h.store.CreateAuthor(ctx, m)
+	if err != nil {
 		log.WithError(err).Error("unable to create author")
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
-			Message: "unable to create author",
+			Message: fmt.Sprintf("unable to create author: %v", err),
 		})
 		return
 	}
-
+	st.ID = fmt.Sprintf("%d", id)
 	out, err := json.Marshal(st)
 	if err != nil {
 		log.WithError(err).Error("unable to marshal response")
