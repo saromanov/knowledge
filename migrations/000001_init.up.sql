@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS "page" (
     title text,
     body text,
     author_id int
-)
+);
 
 CREATE TABLE IF NOT EXISTS link(
     id serial PRIMARY KEY,
