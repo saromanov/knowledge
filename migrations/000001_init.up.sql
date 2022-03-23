@@ -1,13 +1,13 @@
 BEGIN TRANSACTION;
 
 CREATE TABLE IF NOT EXISTS author(
-    ID INT PRIMARY KEY     NOT NULL,
+    ID SERIAL,
     name text not null,
     created_at date not null
 );
 
 CREATE TABLE IF NOT EXISTS "page" (
-    ID INT PRIMARY KEY     NOT NULL,
+    ID SERIAL,
     created_at date not null,
     updated_at date not null,
     title text,

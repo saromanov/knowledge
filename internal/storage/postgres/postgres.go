@@ -55,8 +55,8 @@ func (p *postgres) CreateAuthor(ctx context.Context, m *models.Author) (int64, e
 	}
 	var id int64
 	sqlStatement := `
-INSERT INTO author (id, name, created_at)
-VALUES ($1, $2, $3)
+INSERT INTO author (name, created_at)
+VALUES ($1, $2)
 RETURNING id`
 	err := p.db.QueryRow(sqlStatement, m.Name, m.CreatedAt).Scan(&id)
 	if err != nil {

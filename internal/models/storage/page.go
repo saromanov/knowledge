@@ -9,7 +9,7 @@ type Page struct {
 	UpdatedAt time.Time `db:"updated_at"`
 	Title     string    `db:"title"`
 	Body      string    `db:"body"`
-	AuthorID  string    `db:"author"`
+	AuthorID  int64    `db:"author_id"`
 }
 
 // Author defines author of the article

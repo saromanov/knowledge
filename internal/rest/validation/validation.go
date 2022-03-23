@@ -16,7 +16,7 @@ func PostPage(m *restModel.Page) error {
 	if m.Title == "" {
 		return errNoTitle
 	}
-	if m.AuthorID == "" {
+	if m.AuthorID == 0 {
 		return errNoAuthor
 	}
 	return nil
