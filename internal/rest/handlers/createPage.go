@@ -3,12 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/saromanov/knowledge/internal/models/convert"
 	restModel "github.com/saromanov/knowledge/internal/models/rest"
-	"github.com/saromanov/knowledge/internal/storage"
-	"github.com/saromanov/knowledge/internal/rest/validation"
 	"github.com/saromanov/knowledge/internal/rest/response"
+	"github.com/saromanov/knowledge/internal/rest/validation"
+	"github.com/saromanov/knowledge/internal/storage"
 
 	"github.com/go-chi/render"
 	"github.com/sirupsen/logrus"
@@ -42,7 +43,9 @@ func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	m := convert.RestPageToStoragePage(&st)
-	if err := h.store.CreatePage(ctx, m); err != nil {
+	m.CreatedAt = time.Now().UTC()
+	id, err := h.store.CreatePage(ctx, m)
+	if err != nil {
 		log.WithError(err).Error("unable to create page")
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
 			Message: "unable to create page",
@@ -50,6 +53,7 @@ func (h *createPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	st.ID = id
 	out, err := json.Marshal(st)
 	if err != nil {
 		log.WithError(err).Error("unable to marshal response")

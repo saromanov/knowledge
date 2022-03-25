@@ -47,9 +47,10 @@ func (h *createAuthorHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	st.ID = fmt.Sprintf("%d", id)
 	out, err := json.Marshal(st)
 	if err != nil {
-		log.WithError(err).Error("unable to marshal response")
+		text := "unable to marshal response"
+		log.WithError(err).Error(text)
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
-			Message: "unable to marshal response",
+			Message: text,
 		})
 		return
 	}

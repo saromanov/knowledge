@@ -32,17 +32,17 @@ func (p *postgres) Init(ctx context.Context) error {
 }
 
 // CreatePage provides creating of the page
-func (p *postgres) CreatePage(ctx context.Context, m *models.Page) error {
+func (p *postgres) CreatePage(ctx context.Context, m *models.Page) (int64, error) {
 	sqlStatement := `
 INSERT INTO page (title, body, created_at, updated_at, author_id)
 VALUES ($1, $2, $3, $4, $5)
 RETURNING id`
-	id := 0
+	var id int64
 	err := p.db.QueryRow(sqlStatement, m.Title, m.Body, m.CreatedAt, m.UpdatedAt, m.AuthorID).Scan(&id)
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return id, nil
 }
 
 // CreateAuthor provides creating of the page
