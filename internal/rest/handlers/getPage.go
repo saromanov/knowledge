@@ -55,36 +55,11 @@ func NewGetPageHandler(st storage.Storage) *GetPageHandler {
 
 // Handle defines get request for the page
 func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	ctx := r.Context()
-	log := logrus.New().WithContext(ctx)
-	id := chi.URLParam(r, "id")
-	if id == "" {
-		log.Error("id param is not defined")
-		response.WriteError(w, r, http.StatusBadRequest, restModel.Error{
-			Message: "id param is not defined",
-		})
-		return
-	}
+	page := r.Context().Value("article").(*storageModel.Page)
 
-	idParsed, err := strconv.ParseInt(id, 10, 32)
+	out, err := json.Marshal(page)
 	if err != nil {
-		log.WithError(err).Error("unable to parse id")
-		response.WriteError(w, r, http.StatusBadRequest, restModel.Error{
-			Message: "unable to parse id",
-		})
-		return
-	}
-	result, err := h.store.GetPage(ctx, idParsed)
-	if err != nil {
-		log.WithError(err).Error("unable to get page by id")
-		response.WriteError(w, r, http.StatusBadRequest, restModel.Error{
-			Message: "unable to get page",
-		})
-	}
-
-	out, err := json.Marshal(result)
-	if err != nil {
-		log.WithError(err).Error("unable to marshal response")
+		logrus.WithError(err).Error("unable to marshal response")
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
 			Message: "unable to marshal response",
 		})
@@ -105,13 +80,14 @@ func (h GetPageHandler) GetPageCtx(next http.Handler) http.Handler {
 			err    error
 		)
 
+		ctx := r.Context()
 		if id := chi.URLParam(r, "id"); id != "" {
 			idParsed, err := strconv.ParseInt(id, 10, 32)
 			if err != nil {
 				render.Render(w, r, errPageNotFound)
 				return
 			}
-			result, err = h.store.GetPage(context.Background(), idParsed)
+			result, err = h.store.GetPage(ctx, idParsed)
 		} else {
 			render.Render(w, r, errPageNotFound)
 			return
@@ -121,7 +97,7 @@ func (h GetPageHandler) GetPageCtx(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), "page", result)
-		next.ServeHTTP(w, r.WithContext(ctx))
+		ctxRes := context.WithValue(ctx, "page", result)
+		next.ServeHTTP(w, r.WithContext(ctxRes))
 	})
 }
