@@ -66,6 +66,7 @@ func (r *rest) Close(ctx context.Context) error {
 }
 
 func (r *rest) handlers() http.Handler {
+	getHandler := handlers.NewGetPageHandler(r.st)
 	router := chi.NewRouter()
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
@@ -73,6 +74,7 @@ func (r *rest) handlers() http.Handler {
 	router.Use(middleware.Logger)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 	router.Route("/api/v1", func(ro chi.Router) {
+		ro.Use(getHandler.GetPageCtx)
 		ro.Post("/pages", handlers.NewCreateArticleHandler(r.st).Handle)
 		ro.Post("/authors", handlers.NewCreateAuthorHandler(r.st).Handle)
 		ro.Get("/pages/{id}", handlers.NewGetPageHandler(r.st).Handle)
