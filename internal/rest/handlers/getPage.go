@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -81,7 +82,7 @@ func (h GetPageHandler) GetPageCtx(next http.Handler) http.Handler {
 		)
 
 		ctx := r.Context()
-		if id := chi.URLParam(r, "id"); id != "" {
+		if id := chi.URLParam(r, "pageID"); id != "" {
 			idParsed, err := strconv.ParseInt(id, 10, 32)
 			if err != nil {
 				render.Render(w, r, errPageNotFound)

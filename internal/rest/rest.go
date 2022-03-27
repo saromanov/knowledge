@@ -1,11 +1,11 @@
 package rest
 
 import (
+	"context"
+	"net/http"
 	"os"
 	"os/signal"
-	"context"
 	"syscall"
-	"net/http"
 
 	"github.com/saromanov/knowledge/internal/rest/handlers"
 	"github.com/saromanov/knowledge/internal/storage"
@@ -45,12 +45,12 @@ func (r *rest) Run(ctx context.Context) error {
 				log.Fatal("graceful shutdown timed out.. forcing exit.")
 			}
 		}()
-		if err := server.Shutdown(shutdownCtx);err != nil {
+		if err := server.Shutdown(shutdownCtx); err != nil {
 			log.WithError(err).Fatal("unable to shutdown service")
 		}
 		serverStopCtx()
 	}()
-	
+
 	log.WithField("address", r.cfg.Address).Info("starting of the server")
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		log.WithError(err).Error("closing of the server")
@@ -74,10 +74,14 @@ func (r *rest) handlers() http.Handler {
 	router.Use(middleware.Logger)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 	router.Route("/api/v1", func(ro chi.Router) {
-		ro.Use(getHandler.GetPageCtx)
-		ro.Post("/pages", handlers.NewCreateArticleHandler(r.st).Handle)
+		ro.Route("/pages", func(ros chi.Router) {
+			ros.Post("/", handlers.NewCreateArticleHandler(r.st).Handle)
+			ros.Route("/{pageID}", func(rop chi.Router) {
+				rop.Use(getHandler.GetPageCtx)
+				rop.Get("/", getHandler.Handle)
+			})
+		})
 		ro.Post("/authors", handlers.NewCreateAuthorHandler(r.st).Handle)
-		ro.Get("/pages/{id}", handlers.NewGetPageHandler(r.st).Handle)
 	})
 	return router
 }
