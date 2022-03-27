@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -56,8 +55,11 @@ func NewGetPageHandler(st storage.Storage) *GetPageHandler {
 
 // Handle defines get request for the page
 func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
-	page := r.Context().Value("article").(*storageModel.Page)
-
+	var page *storageModel.Page
+	pageValue := r.Context().Value("page")
+	if pageValue != nil {
+		page = pageValue.(*storageModel.Page)
+	}
 	out, err := json.Marshal(page)
 	if err != nil {
 		logrus.WithError(err).Error("unable to marshal response")

@@ -71,13 +71,13 @@ func (r *rest) handlers() http.Handler {
 	router.Use(middleware.RequestID)
 	router.Use(middleware.Logger)
 	router.Use(middleware.Recoverer)
-	router.Use(middleware.Logger)
+	router.Use(middleware.URLFormat)
 	router.Use(render.SetContentType(render.ContentTypeJSON))
 	router.Route("/api/v1", func(ro chi.Router) {
 		ro.Route("/pages", func(ros chi.Router) {
 			ros.Post("/", handlers.NewCreateArticleHandler(r.st).Handle)
 			ros.Route("/{pageID}", func(rop chi.Router) {
-				rop.Use(getHandler.GetPageCtx)
+				//rop.Use(getHandler.GetPageCtx)
 				rop.Get("/", getHandler.Handle)
 			})
 		})
