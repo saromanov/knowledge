@@ -35,8 +35,7 @@ func (h *createAuthorHandler) Handle(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	m := convert.RestAuthorToStorageAuthor(&st)
-	id, err := h.store.CreateAuthor(ctx, m)
+	id, err := h.store.CreateAuthor(ctx, convert.RestAuthorToStorageAuthor(&st))
 	if err != nil {
 		log.WithError(err).Error("unable to create author")
 		response.WriteError(w, r, http.StatusInternalServerError, restModel.Error{
