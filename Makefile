@@ -1,4 +1,4 @@
 build:
-	podman build -t motorcode/knowlage .
+	podman build -t motorcode/knowledge .
 run:
-	podman run motorcode/knowlage
+	podman run motorcode/knowledge
