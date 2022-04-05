@@ -30,9 +30,14 @@ func NewGetPagesHandler(st storage.Storage) *GetPagesHandler {
 // Handle defines get request for get pages
 func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	authorValue := r.FromValue("author")
+	pages, err := h.store.GetPages(r.Context(), authorValue)
+	if err != nil {
+		render.Render(w, r, errPageNotFound)
+		return
+	}
 	w.WriteHeader(http.StatusCreated)
 	render.JSON(w, r, restModel.Response{
-		Data: (json.RawMessage)(out),
+		Data: (json.RawMessage)(pages),
 	})
 
 }
