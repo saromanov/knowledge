@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: knowledge
-        image: github.com/saromanov/knowledge
+        image: localhost/motorcode/knowledge
         resources:
           limits:
             memory: "128Mi"

@@ -70,6 +70,25 @@ func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) 
 	return &models.Page{}, nil
 }
 
+// GetPages provides getting of the page by id
+func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error){
+	rows, err := db.Query("SELECT * FROM page WHERE author_id = ?", author)
+    if err != nil {
+        return nil, err
+    }
+	result := []*models.Page{}
+    for rows.Next() {
+            var pages models.Page
+            err = rows.Scan(&pages.Title, &pages.Body, &pages.CreatedAt, &pages.UpdatedAt, &pages.AuthorID)
+            if err != nil {
+                return nil, err
+            }
+            result = append(result, pages)
+    }
+	return result, nil
+}
+
+
 // Close provides closing of connectin to db
 func (p *postgres) Close(ctx context.Context) error {
 	if err := p.db.Close(); err != nil {
