@@ -25,3 +25,7 @@ Creating of the author
 POST /api/v1/authors
 ```
 
+Creating of the page
+
+#### Payload
+
