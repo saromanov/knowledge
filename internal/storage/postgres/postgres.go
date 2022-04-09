@@ -72,7 +72,7 @@ func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) 
 
 // GetPages provides getting of the page by id
 func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error){
-	rows, err := db.Query("SELECT * FROM page WHERE author_id = ?", author)
+	rows, err := p.db.Query("SELECT * FROM page WHERE author_id = ?", author)
     if err != nil {
         return nil, err
     }
@@ -83,7 +83,7 @@ func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page,
             if err != nil {
                 return nil, err
             }
-            result = append(result, pages)
+            result = append(result, &pages)
     }
 	return result, nil
 }
