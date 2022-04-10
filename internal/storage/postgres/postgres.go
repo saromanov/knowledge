@@ -3,6 +3,7 @@ package postgres
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 
 	_ "github.com/lib/pq"
@@ -10,6 +11,8 @@ import (
 	models "github.com/saromanov/knowledge/internal/models/storage"
 	"github.com/saromanov/knowledge/internal/storage"
 )
+
+var errAuthorNotDefined = errors.New("author is not defined")
 
 type postgres struct {
 	cfg Config
@@ -71,23 +74,26 @@ func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) 
 }
 
 // GetPages provides getting of the page by id
-func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error){
-	rows, err := p.db.Query("SELECT * FROM page WHERE author_id = ?", author)
-    if err != nil {
-        return nil, err
-    }
+func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error) {
+	if author == "" {
+		return nil, errAuthorNotDefined
+	}
+	rows, err := p.db.Query(`SELECT * FROM "page" WHERE author_id = $1`,author)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 	result := []*models.Page{}
-    for rows.Next() {
-            var pages models.Page
-            err = rows.Scan(&pages.Title, &pages.Body, &pages.CreatedAt, &pages.UpdatedAt, &pages.AuthorID)
-            if err != nil {
-                return nil, err
-            }
-            result = append(result, &pages)
-    }
+	for rows.Next() {
+		var pages models.Page
+		err = rows.Scan(&pages.ID, &pages.CreatedAt, &pages.UpdatedAt, &pages.Title, &pages.Body, &pages.AuthorID)
+		if err != nil {
+			return nil, err
+		}
+		result = append(result, &pages)
+	}
 	return result, nil
 }
-
 
 // Close provides closing of connectin to db
 func (p *postgres) Close(ctx context.Context) error {

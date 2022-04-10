@@ -76,6 +76,7 @@ func (r *rest) handlers() http.Handler {
 	router.Route("/api/v1", func(ro chi.Router) {
 		ro.Route("/pages", func(ros chi.Router) {
 			ros.Post("/", handlers.NewCreateArticleHandler(r.st).Handle)
+			ros.Get("/", handlers.NewGetPagesHandler(r.st).Handle)
 			ros.Route("/{pageID}", func(rop chi.Router) {
 				rop.Get("/", getHandler.Handle)
 			})
