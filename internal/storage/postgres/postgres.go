@@ -12,7 +12,10 @@ import (
 	"github.com/saromanov/knowledge/internal/storage"
 )
 
-var errAuthorNotDefined = errors.New("author is not defined")
+var (
+	errAuthorNotDefined = errors.New("author is not defined")
+	errIDNotDefined = errors.New("id is not defined")
+)
 
 type postgres struct {
 	cfg Config
@@ -70,10 +73,25 @@ RETURNING id`
 
 // GetPage provides getting of the page by id
 func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) {
+	if id == 0 {
+		return &models.Page{}, errIDNotDefined
+	}
+	rows, err := p.db.Query(`SELECT * FROM "page" WHERE id = $1`,id)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	data, err := p.find(rows)
+	if err != nil {
+		return nil, err
+	}
+	if len(data) > 0 {
+		return data[0], nil
+	}
 	return &models.Page{}, nil
 }
 
-// GetPages provides getting of the page by id
+// GetPages provides getting of the page by author id
 func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error) {
 	if author == "" {
 		return nil, errAuthorNotDefined
@@ -83,16 +101,7 @@ func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page,
 		return nil, err
 	}
 	defer rows.Close()
-	result := []*models.Page{}
-	for rows.Next() {
-		var pages models.Page
-		err = rows.Scan(&pages.ID, &pages.CreatedAt, &pages.UpdatedAt, &pages.Title, &pages.Body, &pages.AuthorID)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, &pages)
-	}
-	return result, nil
+	return p.find(rows)
 }
 
 // Close provides closing of connectin to db
@@ -101,6 +110,18 @@ func (p *postgres) Close(ctx context.Context) error {
 		return err
 	}
 	return nil
+}
+
+func (p *postgres) find(rows *sql.Rows) ([]*models.Page, error) {
+	result := []*models.Page{}
+	for rows.Next() {
+		var pages models.Page
+		if err := rows.Scan(&pages.ID, &pages.CreatedAt, &pages.UpdatedAt, &pages.Title, &pages.Body, &pages.AuthorID); err != nil {
+			return nil, err
+		}
+		result = append(result, &pages)
+	}
+	return result, nil
 }
 
 // connect provides connection to postgres
