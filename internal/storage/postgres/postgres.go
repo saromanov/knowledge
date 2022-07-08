@@ -91,6 +91,18 @@ func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) 
 	return &models.Page{}, nil
 }
 
+// DeletePage provides deleting of the page by id
+func (p *postgres) DeletePage(ctx context.Context, id int64) error {
+	if id == 0 {
+		return errIDNotDefined
+	}
+	if _, err := p.db.Exec(`DELETE FROM "page" WHERE id = $1`,id); err != nil {
+		return err
+	}
+	return nil
+}
+
+
 // GetPages provides getting of the page by author id
 func (p *postgres) GetPages(ctx context.Context, author string) ([]*models.Page, error) {
 	if author == "" {
