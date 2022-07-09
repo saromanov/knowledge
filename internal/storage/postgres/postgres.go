@@ -151,7 +151,6 @@ func (p *postgres) connect() error {
 			continue
 		}
 		p.db = db
-		return nil
 	}
 	return lastErr
 }
