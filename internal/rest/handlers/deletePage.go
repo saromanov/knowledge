@@ -27,7 +27,7 @@ func NewDeletePageHandler(st storage.Storage) *DeletePageHandler {
 }
 
 // Handle defines get request for the page
-func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
+func (h DeletePageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 	var page *storageModel.Page
 	pageValue := r.Context().Value("page")
 	if pageValue != nil {
@@ -49,7 +49,7 @@ func (h GetPageHandler) Handle(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeletePageCtx getting middleware page from db
-func (h GetPageHandler) DeletePageCtx(next http.Handler) http.Handler {
+func (h DeletePageHandler) DeletePageCtx(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		var (
 			result *storageModel.Page

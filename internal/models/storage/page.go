@@ -9,13 +9,14 @@ type Page struct {
 	UpdatedAt time.Time `db:"updated_at"`
 	Title     string    `db:"title"`
 	Body      string    `db:"body"`
-	AuthorID  int64    `db:"author_id"`
+	AuthorID  int64     `db:"author_id"`
+	Links     []string  `db:"links"`
 }
 
 // Author defines author of the article
 type Author struct {
-	ID   int64  `db:"id"`
-	Name string `db:"author"`
+	ID        int64     `db:"id"`
+	Name      string    `db:"author"`
 	CreatedAt time.Time `db:"created_at"`
 }
 
