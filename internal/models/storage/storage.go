@@ -10,7 +10,7 @@ type Page struct {
 	Title     string    `db:"title"`
 	Body      string    `db:"body"`
 	AuthorID  int64     `db:"author_id"`
-	Links     []string  `db:"links"`
+	Links     []Link  `db:"links"`
 }
 
 // Author defines author of the article
