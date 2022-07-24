@@ -76,6 +76,9 @@ func (p *postgres) GetPage(ctx context.Context, id int64) (*models.Page, error) 
 	if id == 0 {
 		return &models.Page{}, errIDNotDefined
 	}
+	if p.db == nil {
+		return &models.Page{}, fmt.Errorf("db init is not defined")
+	}
 	rows, err := p.db.Query(`SELECT * FROM "page" WHERE id = $1`,id)
 	if err != nil {
 		return nil, err
